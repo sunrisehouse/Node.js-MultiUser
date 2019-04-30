@@ -1,0 +1,16 @@
+{
+  "name": "simple-sign-up-and-sign-in",
+  "version": "1.0.0",
+  "description": "1. DB\r     1. DB ï¿½ï¿½ï¿½ï¿½\r         * User ï¿½ï¿½ï¿½ï¿½ : ID, Password, email, name\r     2. DB ï¿½ï¿½ï¿½ï¿½ï¿?\r         * DB install\r         * DB table",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.16.4",
+    "mysql": "^2.17.1"
+  }
+}
