@@ -34,7 +34,7 @@
 
 * authentication 기능
 * ID/Password 찾기 기능
-* cookie 이용해 login 상태 유지시키기
+* session 이용해 login 상태 유지시키기
 
 ## 사용한 sql 문
 
