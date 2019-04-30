@@ -1,8 +1,4 @@
-# 간단한 Node.js + MySQL 회원 가입, 로그인 만들기
-
-## 목표
-
-* 간단하게 로그인 회원가입 기능 되는 web application
+# 간단한 회원 가입, 로그인 만들기 with Node.js and MySQL
 
 ## TODO
 
