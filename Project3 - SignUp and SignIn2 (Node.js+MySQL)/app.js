@@ -9,13 +9,17 @@ const bodyParser = require('body-parser');
 app.use( bodyParser.urlencoded({ extended: true }) );
 app.use( bodyParser.json() );
 
+// password ¾ÏÈ£È­ À§ÇÑ bkkdf2
+var bkfd2Password = require("pbkdf2-password");
+var hasher = bkfd2Password();
+
 //====================================================
 /*  MySQL DB ï¿½ï¿½ï¿½ï¿½  */
 
 const db_connection = require('./lib/db')
 
 /*
-db data ìˆ¨ê¸°ê¸° ì´ì „ 
+db data ?ˆ¨ê¸°ê¸° ?´? „ 
 const db_connection = mysql.createConnection({
     host : '',
     user : '',
@@ -87,7 +91,35 @@ app.post('/signin',function(req,res){
     
     var id = req.body.id
     var password = req.body.password
+    var sql = 'select * from users where id = ?'
+    var query = db_connection.query(sql,id,function( err, results, fields){
+        if(err) { throw err }
+        else{
+            console.log(results)
+            if(results.length>0){
 
+                hasher({password:password, salt:results[0].salt}, function(err, pass, salt, hash){
+                    console.log(hash)
+                    console.log('vs')
+                    console.log(results[0].password)
+
+                    if(hash === results[0].password){   // req.body.password ¸¦ ¾ÏÈ£È­ÇÑ hash ¿Í db ¿¡ ÀúÀåµÈ ¾ÏÈ£È­µÈ password ¸¦ ºñ±³
+                        res.send('success sign in')
+                    }
+                    else{
+                        res.send('fail: wrong password')
+                    }
+                });
+            }
+            else{
+                res.send('fail: wrong id')
+            }
+        }
+    })
+    /*
+    //password ¾ÏÈ£È­ Àü
+    var id = req.body.id
+    var password = req.body.password
     var sql = 'select * from users where id = ?'
     var query = db_connection.query(sql,id,function( err, results, fields){
         if(err) { throw err }
@@ -106,8 +138,30 @@ app.post('/signin',function(req,res){
             }
         }
     })
+    */
 })
 app.post('/signup',function(req,res){
+    hasher({password: req.body.password}, function(err, pass, salt, hash){
+        var user = {        // ¾ÏÈ£È­µÈ hash ¿Í salt °ª À» ÀúÀå
+          'id' : req.body.id,
+          'password': hash,
+          'salt': salt,
+          'name' : req.body.name,
+          'email' : req.body.email
+        }
+        console.log('password : '+hash)
+        var sql = 'insert into users SET ?'
+
+        var query = db_connection.query(sql, user , function(err, rows) {
+            if(err) { throw err}
+            else{
+                console.log(rows)
+            }
+        })
+    });
+    
+    /*
+    // password ¾ÏÈ£È­ Àü
     var user = {
         'id' : req.body.id,
         'password' : req.body.password,
@@ -122,4 +176,5 @@ app.post('/signup',function(req,res){
             console.log(rows)
         }
     })
+    */
 })
