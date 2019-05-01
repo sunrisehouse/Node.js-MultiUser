@@ -4,21 +4,21 @@ const port = 3000
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
-// body parser ´Â app ¿¡¼­ post ³ª get À» json data Çü½ÄÀ¸·Î ¹Þ±â À§ÇØ
+// body parser ï¿½ï¿½ app ï¿½ï¿½ï¿½ï¿½ post ï¿½ï¿½ get ï¿½ï¿½ json data ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ±ï¿½ ï¿½ï¿½ï¿½ï¿½
 const bodyParser = require('body-parser');
 app.use( bodyParser.urlencoded({ extended: true }) );
 app.use( bodyParser.json() );
 
 //====================================================
-/*  MySQL DB ¿¬°á  */
+/*  MySQL DB ï¿½ï¿½ï¿½ï¿½  */
 
 const mysql = require('mysql')
 const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'root',
-    password : '1102',
-    port : 3306,
-    database : 'study_db'
+    host : '',
+    user : '',
+    password : '',
+    port : 1,
+    database : ''
 })
 connection.connect(function(err){
     if(err) throw err;
@@ -84,7 +84,7 @@ app.post('/signin',function(req,res){
     var id = req.body.id
     var password = req.body.password
 
-    var sql = 'select * from user where id = ?'
+    var sql = 'select * from users where id = ?'
     var query = connection.query(sql,id,function( err, results, fields){
         if(err) { throw err }
         else{
@@ -110,7 +110,7 @@ app.post('/signup',function(req,res){
         'name' : req.body.name,
         'email' : req.body.email
     }
-    var sql = 'insert into user SET ?'
+    var sql = 'insert into users SET ?'
 
     var query = connection.query(sql, user , function(err, rows) {
         if(err) { throw err}

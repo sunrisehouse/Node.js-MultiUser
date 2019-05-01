@@ -4,11 +4,11 @@ const port = 3000
 
 const mysql = require('mysql')
 const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'root',
-    password : '1102',
-    port : 3306,
-    database : 'study_db'
+    host : '',
+    user : '',
+    password : '',
+    port : 3,
+    database : ''
 })
 
 connection.connect(function(err){
