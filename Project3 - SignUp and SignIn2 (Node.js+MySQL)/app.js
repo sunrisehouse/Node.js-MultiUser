@@ -70,15 +70,44 @@ app.get('/signup',function(req,res){
         <h1>Sign Up </h1>
 
         <form action="/signup" method="post">
-            id :       <input type="text" name="id"><br>
+            id :       <input type="text" name="id">    <button type ="button" id="btn_checkIDOverlap">check id overlap</button><br>
             password : <input type="text" name="password"><br>
             email :    <input type="text" name="email"><br>
             name :     <input type="text" name="name"><br>
-   
             <input type="submit">
             <a href="./signin">Sign In</a>
         </form>
-   
+        <script type="text/javascript">
+        // id 중복 체크 위해
+        var isRightID = false
+        var httpRequest;
+        
+        (function(){
+            document.getElementById("btn_checkIDOverlap").addEventListener('click',checkIDOverlap);
+
+            function checkIDOverlap(){
+                httpRequest = new XMLHttpRequest();
+
+                if (!httpRequest) {
+                alert('Giving up :( Cannot create an XMLHTTP instance');
+                return false;
+                }
+                httpRequest.onreadystatechange = alertContents;
+                httpRequest.open('POST', "./ajax");
+                httpRequest.send({'hello':'hi'});
+            }
+            function alertContents() {
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                    if (httpRequest.status === 200) {
+                      alert(httpRequest.responseText);
+                    } else {
+                      alert('There was a problem with the request.');
+                    }
+                }
+            }
+        })()
+        </script>
+
     </body>
     </html>
     `)
@@ -158,7 +187,7 @@ app.post('/signup',function(req,res){
                 console.log(rows)
             }
         })
-    });
+    })
     
     /*
     // password 암호화 전
@@ -177,4 +206,12 @@ app.post('/signup',function(req,res){
         }
     })
     */
+})
+
+app.post('/ajax',function(req,res){
+    console.log('ajax')
+    console.log(req.body.hello)
+
+    res.send({result:true,msg:'sgsgsgsgdss'})
+    
 })
