@@ -49,12 +49,13 @@ app.get('/signup',function(req,res){
     <html>
     <head>
         <meta charset="utf-8">
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     </head>
     <body>
         <h1>Sign Up </h1>
 
         <form action="/signup" method="post">
-            id :       <input type="text" name="id">    <button type ="button" id="btn_checkIDOverlap">check id overlap</button><br>
+            id :       <input type="text" name="id" id="_id">    <button type ="button" id="btn_checkIDOverlap">check id overlap</button><br>
             password : <input type="text" name="password"><br>
             email :    <input type="text" name="email"><br>
             name :     <input type="text" name="name"><br>
@@ -62,35 +63,27 @@ app.get('/signup',function(req,res){
             <a href="./signin">Sign In</a>
         </form>
         <script type="text/javascript">
-        // id 중복 체크 위해
-        var isRightID = false
-        var httpRequest;
         
-        (function(){
-            document.getElementById("btn_checkIDOverlap").addEventListener('click',checkIDOverlap);
+        $('#btn_checkIDOverlap').click(function(){
+            $.ajax({
+                url:'./overlap',
+                dataType:'json',
+                type:'POST',
+                data:{id:$('#_id').val()},
+                success:function(result){
+                    if(result['result']==true){
+                        if(result['isOverlap']==true){
+                            alert("overlap")
+                        }else{
+                            alert("can use")
+                        }
+                    }else{
+                        alert("network error")
+                    }
+                }
+            })
+        })
 
-            function checkIDOverlap(){
-                if(window.XMLHttpRequest){
-                    httpRequest = new XMLHttpRequest();
-                }
-                
-                if (!httpRequest) {
-                    alert('Giving up :( Cannot create an XMLHTTP instance');
-                    return false;
-                }
-                httpRequest.onreadystatechange = alertContents;
-                httpRequest.open('POST', './overlap');
-                httpRequest.setRequestHeader('Content-Type', 'application/json');
-                httpRequest.send({'id':'wjddnv'});
-            }
-            function alertContents() {
-                if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-                      alert(httpRequest.responseText);
-                }else{
-                    alert('There was a problem with the request.');
-                }
-            }
-        })()
         </script>
 
     </body>
@@ -113,10 +106,6 @@ app.post('/signin',function(req,res){
             if(results.length>0){
 
                 hasher({password:password, salt:results[0].salt}, function(err, pass, salt, hash){
-                    console.log(hash)
-                    console.log('vs')
-                    console.log(results[0].password)
-
                     if(hash === results[0].password){   // req.body.password 를 암호화한 hash 와 db 에 저장된 암호화된 password 를 비교
                         res.send('success sign in')
                     }
@@ -140,36 +129,31 @@ app.post('/signup',function(req,res){
           'name' : req.body.name,
           'email' : req.body.email
         }
-        console.log('password : '+hash)
         var sql = 'insert into users SET ?'
 
         var query = db_connection.query(sql, user , function(err, rows) {
             if(err) { throw err}
             else{
-                console.log(rows)
+                console.log('insert success')
             }
         })
     })
 })
 
 app.post('/overlap',function(req,res){
-    console.log(req.body)
+
     var id = req.body.id
-    console.log('aaaaaaaaaaaaaa')
-/*
     var sql = 'select * from users where id = ?'
     var query = db_connection.query(sql,id,function( err, results, fields){
         if(err) { throw err }
         else{
+            console.log(results)
             if(results.length>0){
                 res.send({result:true,isOverlap:true})
             }
             else{
                 res.send({result:true,isOverlap:false})
-            }
-                
+            }          
         }
     })
-*/  
-    
 })
