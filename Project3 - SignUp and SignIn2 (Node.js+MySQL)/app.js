@@ -14,24 +14,8 @@ var bkfd2Password = require("pbkdf2-password");
 var hasher = bkfd2Password();
 
 //====================================================
-/*  MySQL DB ÔøΩÔøΩÔøΩÔøΩ  */
 
 const db_connection = require('./lib/db')
-
-/*
-db data ?à®Í∏∞Í∏∞ ?ù¥?†Ñ 
-const db_connection = mysql.createConnection({
-    host : '',
-    user : '',
-    password : '',
-    port : 1,
-    database : ''
-})
-db_connection.connect(function(err){
-    if(err) throw err;
-    console.log("db connected!")
-})
-*/
 
 //===<  get  >=========================================
 app.get('/',function(req,res){
@@ -86,23 +70,24 @@ app.get('/signup',function(req,res){
             document.getElementById("btn_checkIDOverlap").addEventListener('click',checkIDOverlap);
 
             function checkIDOverlap(){
-                httpRequest = new XMLHttpRequest();
-
+                if(window.XMLHttpRequest){
+                    httpRequest = new XMLHttpRequest();
+                }
+                
                 if (!httpRequest) {
-                alert('Giving up :( Cannot create an XMLHTTP instance');
-                return false;
+                    alert('Giving up :( Cannot create an XMLHTTP instance');
+                    return false;
                 }
                 httpRequest.onreadystatechange = alertContents;
-                httpRequest.open('POST', "./ajax");
-                httpRequest.send({'hello':'hi'});
+                httpRequest.open('POST', './overlap');
+                httpRequest.setRequestHeader('Content-Type', 'application/json');
+                httpRequest.send({'id':'wjddnv'});
             }
             function alertContents() {
-                if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                    if (httpRequest.status === 200) {
+                if (httpRequest.readyState == 4 && httpRequest.status == 200) {
                       alert(httpRequest.responseText);
-                    } else {
-                      alert('There was a problem with the request.');
-                    }
+                }else{
+                    alert('There was a problem with the request.');
                 }
             }
         })()
@@ -145,29 +130,6 @@ app.post('/signin',function(req,res){
             }
         }
     })
-    /*
-    //password æœ»£»≠ ¿¸
-    var id = req.body.id
-    var password = req.body.password
-    var sql = 'select * from users where id = ?'
-    var query = db_connection.query(sql,id,function( err, results, fields){
-        if(err) { throw err }
-        else{
-            console.log(results)
-            if(results.length>0){
-                if(results[0].password == password){
-                    res.send('success sign in')
-                }
-                else{
-                    res.send('fail: wrong password')
-                }
-            }
-            else{
-                res.send('fail: wrong id')
-            }
-        }
-    })
-    */
 })
 app.post('/signup',function(req,res){
     hasher({password: req.body.password}, function(err, pass, salt, hash){
@@ -188,30 +150,26 @@ app.post('/signup',function(req,res){
             }
         })
     })
-    
-    /*
-    // password æœ»£»≠ ¿¸
-    var user = {
-        'id' : req.body.id,
-        'password' : req.body.password,
-        'name' : req.body.name,
-        'email' : req.body.email
-    }
-    var sql = 'insert into users SET ?'
-
-    var query = db_connection.query(sql, user , function(err, rows) {
-        if(err) { throw err}
-        else{
-            console.log(rows)
-        }
-    })
-    */
 })
 
-app.post('/ajax',function(req,res){
-    console.log('ajax')
-    console.log(req.body.hello)
-
-    res.send({result:true,msg:'sgsgsgsgdss'})
+app.post('/overlap',function(req,res){
+    console.log(req.body)
+    var id = req.body.id
+    console.log('aaaaaaaaaaaaaa')
+/*
+    var sql = 'select * from users where id = ?'
+    var query = db_connection.query(sql,id,function( err, results, fields){
+        if(err) { throw err }
+        else{
+            if(results.length>0){
+                res.send({result:true,isOverlap:true})
+            }
+            else{
+                res.send({result:true,isOverlap:false})
+            }
+                
+        }
+    })
+*/  
     
 })

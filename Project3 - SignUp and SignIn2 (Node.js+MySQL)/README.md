@@ -32,4 +32,6 @@
 
 ### CHeck the overlap of ID or email
 
-* 아이디 중복 체크 버튼을 누를 수도 있겠지만 그것 보다는 ajax 를 이용해 바로바로 확인 가능하게 만들고 싶었다.
+* javscript ajax 를 이용한 통신으로 중복체크 기능 만듬
+* ajax 에서 보낸 id 값이 server 에서 내 예상대로 오지 않는 문제 발생.
+* ajax 로 보낸 data 가 어디에 담겨 오는 건지 찾아봐야겠다.
