@@ -35,3 +35,5 @@
 * javscript ajax 를 이용한 통신으로 중복체크 기능 만듬
 * ajax 에서 보낸 id 값이 server 에서 내 예상대로 오지 않는 문제 발생.
 * ajax 로 보낸 data 가 어디에 담겨 오는 건지 찾아봐야겠다.
+* 이유를 몰라서 pure javascript 에서 jquery 로 바꿔서 ajax 사용 했더니 됨.
+* 흠 pure javascript 로도 됐었는데 뭐가 문젠지 모르겠다.
