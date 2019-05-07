@@ -30,10 +30,29 @@
 * 이게 맞는 암호화인지는 잘 모르겠다.
 * 참고 싸이트) https://swk3169.tistory.com/entry/Nodejs-PBKDF2%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EB%B3%B4%EC%95%88
 
-### CHeck the overlap of ID or email
+### Check the overlap of ID or email
 
 * javscript ajax 를 이용한 통신으로 중복체크 기능 만듬
 * ajax 에서 보낸 id 값이 server 에서 내 예상대로 오지 않는 문제 발생.
 * ajax 로 보낸 data 가 어디에 담겨 오는 건지 찾아봐야겠다.
 * 이유를 몰라서 pure javascript 에서 jquery 로 바꿔서 ajax 사용 했더니 됨.
 * 흠 pure javascript 로도 됐었는데 뭐가 문젠지 모르겠다.
+
+### session 이용한 로그인 정보 확인
+1. npm install express-session
+2. session module 옵션 설장
+3. npm install session store - 그렇지 않으면 session 이 메모리에 저장돼서 app 종료 시 session 날라가기 때문
+4. 로그인할 때 session 에 로그인 정보 변경
+5. 로그인 정보 활용하는 페이지에서 session 확인
+
+
+* 회원가입
+    1. post 로 회원 정보 받기
+    2. 회원 정보 DB 에 insert
+    3. 로그인
+* 로그인
+    1. post 로 로그인 정보 받기
+    2. 로그인 정보 DB 비교
+    3. session 에 로그인 정보 등록
+* 로그인 정보 확인
+    1. 페이지 이동 시 session 정보 확인

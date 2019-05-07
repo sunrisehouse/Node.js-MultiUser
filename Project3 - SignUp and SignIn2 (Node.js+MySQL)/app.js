@@ -13,13 +13,27 @@ app.use( bodyParser.json() );
 var bkfd2Password = require("pbkdf2-password");
 var hasher = bkfd2Password();
 
+// session
+var session = require('express-session')
+app.use(session({
+    secret : 'keyboard cat',
+    resave: false,
+    saveUnitialized: true
+}))
+
 //====================================================
 
 const db_connection = require('./lib/db')
 
 //===<  get  >=========================================
 app.get('/',function(req,res){
-    res.send('hello')
+    console.log(req.session)
+    if(req.session.num==undefined){
+        req.session.num = 1
+    }else{
+        req.session.num += 1
+    }
+    res.send(`Views : ${req.session.num}`)
 })
 app.get('/signin', function(req, res){
     res.send(`
@@ -112,7 +126,7 @@ app.post('/signin',function(req,res){
                     else{
                         res.send('fail: wrong password')
                     }
-                });
+                })
             }
             else{
                 res.send('fail: wrong id')
