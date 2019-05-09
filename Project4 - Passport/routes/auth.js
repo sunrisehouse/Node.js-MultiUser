@@ -1,53 +1,99 @@
 var express = require('express');
 var router = express.Router();
-var bodyParser = require('body-parser');
-router.use( bodyParser.urlencoded({ extended: true }) );
-router.use( bodyParser.json() );
 
-var signLib = require('../lib/sign');
+module.exports = function(passport){
 
-router.get('/login',function(req,res){
-    res.send('Login');
-})
-router.get('/register',function(req,res){
-    res.send('Register');
-});
-
-router.post('/signin',function(req,res){
-    var body = req.body;
-    var id = body.id;
-    var password = body.password;
-
-    if(signLib.signIn(id, password)){
-        res.send('sign in success');
-    }else{
-        res.send('sign in fail');
-    }
-});
-
-router.post('/signup',function(req,res){
-    var body = req.body;
-    var id = body.id;
-    var password = body.password;
-    var name = body.name;
-    var email = body.email;
-
-    if(signLib.signUp(id,password,name,email)){
-        res.send('sign up success');
-    }else{
-        res.send('sign up fail');
-    }
-});
-
-router.post('/signout',function(req,res){
-    var body = req.body;
-    var id = body.id;
+    router.get('/login',function(req,res){
+        res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h1>Sign In</h1>
     
-    if(signLib.signOut(id)){
-        res.send('sign out success');
-    }else{
-        res.send('sign out fail');
-    }
-});
+        <form action="/auth/signin" method="post">
+            id :        <input type="text" name="id"><br>
+            password :  <input type="text" name="password"><br>
+   
+            <input type="submit">
+            <a href="./signup">sign up</a>
+        </form>
+   
+    </body>
+    </html>
+    `)
+    })
+    router.get('/register',function(req,res){
+        res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    </head>
+    <body>
+        <h1>Sign Up </h1>
 
-module.exports = router;
+        <form action="/auth/signup" method="post">
+            id :       <input type="text" name="id" id="_id">    <button type ="button" id="btn_checkIDOverlap">check id overlap</button><br>
+            password : <input type="text" name="password"><br>
+            email :    <input type="text" name="email"><br>
+            name :     <input type="text" name="name"><br>
+            <input type="submit">
+            <a href="./signin">Sign In</a>
+        </form>
+        <script type="text/javascript">
+        
+        $('#btn_checkIDOverlap').click(function(){
+            $.ajax({
+                url:'./overlap',
+                dataType:'json',
+                type:'POST',
+                data:{id:$('#_id').val()},
+                success:function(result){
+                    if(result['result']==true){
+                        if(result['isOverlap']==true){
+                            alert("overlap")
+                        }else{
+                            alert("can use")
+                        }
+                    }else{
+                        alert("network error")
+                    }
+                }
+            })
+        })
+
+        </script>
+
+    </body>
+    </html>
+    `)
+    });
+
+    router.post('/signin',passport.authenticate('local', {   
+        successRedirect: '/',
+        failureRedirect: '/auth/login' }));
+
+    router.post('/signout',function(req,res){
+        // logout 후에 login data 세션에 저장
+        req.logOut();
+        req.session.save(function(){
+            res.send('logout');
+        });
+    });
+
+    router.post('/signup',function(req,res){
+        var body = req.body;
+        var id = body.id;
+        var password = body.password;
+        var name = body.name;
+        var email = body.email;
+
+        res.send('signup');
+    });
+    
+    return router;
+};
