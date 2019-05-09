@@ -50,4 +50,18 @@
         - 비동기 처리 관련 공부가 더 필요하다고 생각이 든다.
         - 그래서 일단은 db library 작성했던 것을 지운다.
     7. session 처리
-        - serializeUser, deserializeUser 부분
+        - serializeUser 로그인 시 session 에 등록하는 부분.
+            - req.user 에 저장한 값이 들어있다.
+        - deserializeUser 매 페이지 이동마다 실행되는 듯. login 됐을 때만
+            - 매 페이지 이동미디 session 값이 db 에 있는지 확인해야 할 듯
+    8. login data 표시
+        - req.user 에서 login 정보를 확인한다.
+    9. log out 만들기
+    
+## 개선할 점
+
+- session 을 파일로 저장하는데 db 에 넣는 것을 해봐야 겠다.
+- password 보인
+- post 보안 
+- 보안 관련해서 좀 알아봐야 할 것 같다.
+- helmet 도 써봐야겠다.           

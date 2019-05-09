@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var db = require('../lib/db')
 
 module.exports = function(passport){
 
@@ -13,12 +14,12 @@ module.exports = function(passport){
     <body>
         <h1>Sign In</h1>
     
-        <form action="/auth/signin" method="post">
+        <form action="./signin" method="post">
             id :        <input type="text" name="id"><br>
             password :  <input type="text" name="password"><br>
    
             <input type="submit">
-            <a href="./signup">sign up</a>
+            <a href="./register">sign up</a>
         </form>
    
     </body>
@@ -36,13 +37,13 @@ module.exports = function(passport){
     <body>
         <h1>Sign Up </h1>
 
-        <form action="/auth/signup" method="post">
+        <form action="./signup" method="post">
             id :       <input type="text" name="id" id="_id">    <button type ="button" id="btn_checkIDOverlap">check id overlap</button><br>
             password : <input type="text" name="password"><br>
             email :    <input type="text" name="email"><br>
             name :     <input type="text" name="name"><br>
             <input type="submit">
-            <a href="./signin">Sign In</a>
+            <a href="./login">Sign In</a>
         </form>
         <script type="text/javascript">
         
@@ -77,22 +78,31 @@ module.exports = function(passport){
         successRedirect: '/',
         failureRedirect: '/auth/login' }));
 
-    router.post('/signout',function(req,res){
+    router.get('/signout',function(req,res){
         // logout 후에 login data 세션에 저장
         req.logOut();
         req.session.save(function(){
-            res.send('logout');
+            res.redirect('/');
         });
     });
 
     router.post('/signup',function(req,res){
-        var body = req.body;
-        var id = body.id;
-        var password = body.password;
-        var name = body.name;
-        var email = body.email;
-
-        res.send('signup');
+        var user = {        // 암호화된 hash 와 salt 값 을 저장
+            'id' : req.body.id,
+            'password': req.body.password,
+            'salt':'',
+            'name' : req.body.name,
+            'email' : req.body.email
+        }
+          var sql = 'insert into users SET ?'
+  
+          var query = db.query(sql, user , function(err, rows) {
+              if(err) { throw err}
+              else{
+                  console.log('insert success')
+                  res.redirect('./login');
+              }
+          })
     });
     
     return router;

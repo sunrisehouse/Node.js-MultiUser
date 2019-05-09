@@ -14,30 +14,37 @@ module.exports = function(app) {
                 passwordField:'password'
             },
             function(id,password,done){
-                var users = db.selectUser(id);
-                console.log('users : ',users);
-                var user = users[0];
-                
-                if(user){
-                    if(password ===user.password){
-                        console.log('yes login');
-                        return done(null,user);
-                    }else{
-                        console.log('no password');
-                        return done(null, fasle);
+                var sql = 'select * from users where id = ?'
+                var query = db.query(sql,id,function( err, results, fields){
+                    if(err) { throw err }
+                    else{
+                        var user = results[0];
+                        if(user){
+                            if(user.password === password){
+                                console.log('id pwd success')
+                                return done(null,user);    
+                            }else{
+                                console.log('pwd fail')
+                                return done(null,false);
+                            }
+                        }
+                        else{
+                            console.log('id fail')
+                            return done(null,false);
+                        }
                     }
-                }else{
-                    console.log('no id');
-                    return done(null,false);
-                }
+                })
             }
         )
     );
     passport.serializeUser(function(user,done){
+        // login success
         console.log('serializeUser : ',user);
+        done(null,user.id);
     });
     passport.deserializeUser(function(id,done){
         console.log('deserializeUser : ',id);
+        done(null,id);
     });
 
     return passport;
